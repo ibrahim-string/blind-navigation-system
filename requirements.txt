@@ -1,0 +1,4 @@
+text-to-speech
+pyaudio
+opencv-python
+speechrecognition
