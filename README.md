@@ -3,7 +3,7 @@ This repo is built to help Blind people using tech
 
 
 How to use?
-pip install -m requirements.txt
+> pip install -m requirements.txt
 
 
 
@@ -19,4 +19,4 @@ Python modules that are used in this project as mentioned below
 
 
 To run the program use
-python concurrent.py
+> python concurrent.py
