@@ -1,0 +1,6 @@
+SpeechRecognition
+text-to-speech
+opencv-python
+pyaudio
+flask
+numpy
