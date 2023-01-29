@@ -1,41 +1,54 @@
+# Importing required modules
 from flask import Flask, request, render_template, Response
-import camera
+import cv2
 
-
-global capture
-
+# Initiating flash 
 app = Flask(__name__)
 
-# @app.route("/")
-# def main():
-#     return "<h1>Hello world</h1>"
 
+# Starting to cap
+capture = cv2.VideoCapture(0)
+
+
+# Home route
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-def gen(camera):
+
+# Function to generate the frame
+def gen():
     while True:
-        #get camera frame
-        frame = camera
-        # print(type(frame))
-        return (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        success, frame = capture.read()
+        if success:
+            try:
+                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            except Exception as e:
+                pass   
+        else:
+            continue
         
 
+
+# Path to feed the video to the html
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen(camera.capture()),mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 
-
-# @app.route('/video_feed')
-# def video_feed():
-#     return Response(camera.capture())
-
+# Some extra stuffs
 @app.route("/requests", methods=['POST', 'GET'])
 def tasks():
     return "<h1>Ariyal</h1>"
 
+
+# To start the server
 app.run()
+
+
+capture.release()
+cv2.destroyAllWindows()
